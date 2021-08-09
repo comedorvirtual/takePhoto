@@ -87,12 +87,12 @@ public class MainActivity extends AppCompatActivity {
     private HandlerThread mBackgroundThread;
 
     //MEDIARECORDER
-    Button grabar;
-    MediaRecorder recorder;
+    private Button grabar;
+    private MediaRecorder recorder;
     public String FILE_PATH ;
-    TextView tvResult;
-    MediaPlayer mp;
-    SwitchCompat mswitch;
+    private TextView tvResult;
+    private MediaPlayer mp;
+    private SwitchCompat mswitch;
     int status;
 
     private static int MICROPHONE_PERMISSION_CODE = 200;
@@ -100,15 +100,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        textureView = (TextureView) findViewById(R.id.texture);
+
+        textureView = findViewById(R.id.texture);
+        mswitch = findViewById(R.id.timerSwitch);
+        grabar = findViewById(R.id.Grabar);
+
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
+
         if (isMicrophonePresent()) getMicrophonePermission();
+
         FILE_PATH = getRecordingFilePath();
-        grabar = findViewById(R.id.Grabar);
+
         addControls();
         mp = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI);
-        mswitch = findViewById(R.id.timerSwitch);
+
 
         SharedPreferences prefs = getSharedPreferences("status", MODE_PRIVATE);
         if(prefs!=null)
@@ -226,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            tvResult.setText("Detecting clap .....");
+            tvResult.setText("Detectando Sonido .....");
 //            mp.stop();
         }
 
@@ -492,7 +498,13 @@ public class MainActivity extends AppCompatActivity {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
             StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             assert map != null;
-
+            imageDimension = map.getOutputSizes(SurfaceTexture.class)[0];
+            // Add permission for camera and let user grant the permission
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                return;
+            }
+            manager.openCamera(cameraId, stateCallback, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
