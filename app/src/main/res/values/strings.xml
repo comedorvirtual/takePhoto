@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">takePhoto</string>
+    <string name="grabar">Grabar</string>
+    <string name="detener">Detener</string>
+</resources>
