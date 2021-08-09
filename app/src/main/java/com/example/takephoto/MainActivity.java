@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (isMicrophonePresent()) getMicrophonePermission();
 
-        FILE_PATH = getRecordingFilePath();
+        FILE_PATH = getRecordingFilePathAudio();
 
         addControls();
         mp = MediaPlayer.create(this, Settings.System.DEFAULT_RINGTONE_URI);
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void addControls() {
         tvResult = findViewById(R.id.tvResult);
-        File file = new File(getRecordingFilePath());
+        File file = new File(getRecordingFilePathAudio());
         if(file.exists()){
             file.delete();
         }
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             recorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-            recorder.setOutputFile(getRecordingFilePath());
+            recorder.setOutputFile(getRecordingFilePathAudio());
 
             try {
                 recorder.prepare();
@@ -221,12 +221,20 @@ public class MainActivity extends AppCompatActivity {
     private boolean isCameraPresent() {
         return this.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA);
     }
-    public String getRecordingFilePath(){
+    public String getRecordingFilePathAudio(){
         ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
         File musicDIrectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
         File file = new File(musicDIrectory, "testRecording" + ".mp3");
         return  file.getPath();
     }
+
+    public String getRecordingFilePathPhoto(){
+        ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
+        File musicDIrectory = contextWrapper.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File file = new File(musicDIrectory, "imagen" + ".jpg");
+        return  file.getPath();
+    }
+
     public class RecordAmplitudeTask extends AsyncTask<AmplitudeClipListener, Void, Boolean> {
 
         @Override
@@ -275,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("result", result+"");
             if(result){
                 tvResult.setText("Heard Clap");
+                takePicture();
                 notification();
                 mp.start();
                 try {
@@ -398,7 +407,7 @@ public class MainActivity extends AppCompatActivity {
             // Orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            final File file = new File(Environment.getExternalStorageDirectory() + "/pic.jpg");
+            final File file = new File(getRecordingFilePathPhoto());
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
