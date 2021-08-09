@@ -7,11 +7,12 @@
     tools:context=".MainActivity">
             <LinearLayout
                 android:id="@+id/llReminder"
+                android:gravity="center_horizontal"
                 style="@style/settings_item_layout">
                 <TextView
                     android:id="@+id/tv_reminder_header"
                     style="@style/settings_header"
-                    android:text="Clap To Find Phone"
+                    android:text="@string/toma_foto"
                     android:textColor="@android:color/holo_red_dark"
                     android:textSize="24sp" />
                 <RelativeLayout
@@ -22,7 +23,7 @@
                     <TextView
                         android:id="@+id/tv_reminder_label"
                         style="@style/settings_sub_header"
-                        android:text="Turn ON/OFF detecting of clap" />
+                        android:text="@string/activar_deteccion_automatica" />
 
                     <androidx.appcompat.widget.SwitchCompat
                         android:id="@+id/timerSwitch"
